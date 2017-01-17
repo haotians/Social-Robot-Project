@@ -1,0 +1,82 @@
+==============================================
+
+EwayBot-Voice开发环境的配置
+
+==============================================
+
+讯飞开放平台的地址：http://www.xfyun.cn/
+
+==============================================
+
+EwayBot在讯飞开放平台的帐号信息：
+日期: 2015.11.27
+e-mail address: ewayvoice@163.com
+e-mail pwd    : WelcomeToEway
+xunfei usrname: ewayvoice@163.com
+xunfei pwd    : aabbccdd
+appid         : showed in SDK
+
+==============================================
+
+SDK下载步骤：
+
+    进入讯飞开放平台-->点击“我的语音云”-->“我的应用”-->已开通的服务-->离线命令词识别
+-->“体验SDK下载”（右下角灰色）
+
+==============================================
+
+操作步骤：
+
+1. pull Voice 下的dev分支；
+
+2. 把~/Voice-dev里面包含的include文件夹和lib文件夹用刚刚下载的SDK进行替换；
+
+3. 在src/目录下把vsr.cpp文件中如下内容：
+	const char *login_config    = "appid = *******";
+   “*******” 修改为目前的appid，在下载的SDK文件当中包含当前的appid，复制粘贴即可。
+   ~/x64/examples/asrdemo/asrdemo.c当中包含当前的appid。
+
+4. 按照~/Voice-dev/README.md 进行操作，得到可运行程序asr，并且将它在命令行运行起来；
+
+5. 运行~/Voice-dev/py/py_voice1127 ；
+
+6. 至此，Voice开发的环境搭建完成。
+===============================================
+===============================================
+
+Configuration of exploiting environment for EwayBot-Voice module
+
+===============================================
+
+URL of XunFei on-line platform: http://www.xfyun.cn/
+
+===============================================
+Account of EwayBot on XunFei platform:
+date: 27/11/2015
+e-mail address: ewayvoice@163.com
+e-mail pwd    : WelcomeToEway
+xunfei usrname: ewayvoice@163.com
+xunfei pwd    : aabbccdd
+appid         : showed in SDK
+
+===============================================
+SDK downloading:
+
+    On website of XunFeiYun-->click "我的语音云"-->"我的应用"-->"已开通的服务"-->"离线命令词识别"-->"体验SDK下载"(lower right conner showed in gray icon)
+
+===============================================
+Way to config:
+
+1. Repositories-->Voice-->branch "dev"-->pull;
+
+2. Replace "~/Voice-dev/include" & "~/Voice-dev/lib" with "~/Linux_aitalk_2.002_********/x64/lib/inc" & "~/Linux_aitalk_2.002_********/x64/lib/"
+   if there is any , the missing file can be downloaded on xunfei.cn;
+
+3. cd ~/Voice-dev/src/; gedit vsr.cpp;
+   Revise "const char *login_config    = "appid = *******";"
+   The "*******" must be your currently using appid, which is showed in the name of your SDK folder's name such as : "~/Linux_aitalk_2.002_564c3bff";
+
+4. Follow the order of ~/Voice-dev/README.md;
+
+5. All the configurations are done.
+===============================================

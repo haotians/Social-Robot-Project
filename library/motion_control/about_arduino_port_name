@@ -1,0 +1,13 @@
+refs: http://hintshop.ludvig.co.nz/show/persistent-names-usb-serial-devices/
+http://ubuntuforums.org/showthread.php?t=168221
+
+1. pulg in arduino, and check port name
+
+2. get serial attibutes: udevadm info -a -n /dev/ttyUSB1 | grep '{serial}' | head -n1
+
+3. build rules, (one can have multiple rules in a file ?):
+
+SUBSYSTEM=="tty", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="0042", ATTRS{serial}=="95437313934351E04112", SYMLINK+="arduino009"
+
+4. restart udev: sudo /etc/init.d/udev restart
+

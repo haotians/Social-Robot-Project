@@ -1,0 +1,9 @@
+﻿#BNF+IAT 1.0 UTF-8;
+!grammar call;
+
+!slot <direction>;
+!start <commands>;
+<commands>:(转|向|往) <direction>;
+<direction>: 前|后|左|右;
+
+

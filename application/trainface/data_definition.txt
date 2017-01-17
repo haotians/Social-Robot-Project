@@ -1,0 +1,10 @@
+input
+	stop : 0    （终止训练）
+	start : [1,name]    (开始取样,start时message中包含name，既UI端输入的名字)
+	processing : 2（多次拍照）
+	
+
+
+output
+	message_type = 5  data = [61, "..."]    ... ： 多条训练语句
+	message_type = 61 data = [0]            ... :  告诉dt删除train_face节点

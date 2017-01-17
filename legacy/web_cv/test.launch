@@ -1,0 +1,4 @@
+<launch>
+  <node pkg="web_video_server" type="web_video_server" name="web_video_server" />
+	<node pkg="cv_ros" type="cv_ros.py" name="cv_ros"/>
+</launch>

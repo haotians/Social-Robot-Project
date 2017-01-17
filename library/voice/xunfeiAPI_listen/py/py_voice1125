@@ -1,0 +1,117 @@
+# coding=utf-8
+import py_voice_init as pby
+import time
+import Basic
+import wave
+import pyaudio
+import socket
+from bs4 import BeautifulSoup
+
+
+class EWayVoice(Basic.BasicData):
+    """
+    """
+
+    def __init__(self):
+        Basic.BasicData.__init__(self)
+        # self.API_KEY = 'KWDnbPePMm5GfAV1Z2Et1ai1'
+        # self.API_SECRET = 'd8f23d71249de2cb19a4c62f0018dba1'
+        self.API_KEY = 'UTGBR7UgGltonFz2XDRIIpoY'
+        self.API_SECRET = 'ee54c5b505d02e99fab8d814816467b1'
+        self.stop_thread_flag = True
+        self.audio = None
+        self.res = ""
+        self.recognizer = None
+        self.microphone = None
+        self.WAVE_OUTPUT_FILENAME = "../build/bin/wav/out.wav"
+        self.CHANNELS = 1
+        self.RATE = 16000
+
+    def say(self, str_static):
+        """
+        Function: convert the content of the str_static to voice and then to broadcast it.
+        :param str_static:
+        :type str_static: str.
+        :returns:
+        """
+        tts = pby.TTS(app_key=self.API_KEY, secret_key=self.API_SECRET)
+        tts.say(str_static, 5, 7, 5, 0)
+
+    def create_recognizer(self):
+        self.recognizer = pby.Recognizer(app_key=self.API_KEY, secret_key=self.API_SECRET,
+                                         energy_threshold=8000, dynamic_energy_threshold_flag=True)
+        self.microphone = pby.Microphone()
+
+    def voice_detect(self):
+        self.create_recognizer()
+        while self.stop_thread_flag:
+            self.res = ""
+            print "start listening"
+            with self.microphone as source:
+                self.audio = self.recognizer.listen(source, start_timeout=5, end_timeout=5)
+                frames = list()
+                frames.append(self.audio.data)
+                wave_file = wave.open(self.WAVE_OUTPUT_FILENAME, 'wb')
+                wave_file.setnchannels(self.CHANNELS)
+                wave_file.setsampwidth(2)  # waveFile.setsampwidth(audio.get_sample_size(FORMAT))
+                wave_file.setframerate(self.RATE)
+                wave_file.writeframes(b''.join(frames))
+                wave_file.close()
+                break
+
+    def vsr_req(self):
+
+        encoding = "GBK"
+
+        HOST = '0.0.0.0'    # The remote host
+        PORT = 8888              # The same port as used by the server
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(10.0)
+        s.connect((HOST, PORT))
+        s.sendall('vsr')
+        data = s.recv(1024)
+        # s.close()
+        print 'Received', repr(data)
+        data = s.recv(1024)
+        # s.close()
+        print 'Received', repr(data)
+        # data = s.recv(4096)
+        print "=" * 80
+        # print data
+        y = BeautifulSoup(data, "xml")
+        print "=" * 80
+        print "raw txt:", y.rawtext.string
+        print "confidence:", y.confidence.string
+        s.close()
+
+    def audio_in(self, *args):
+        """
+        Function: To recorded the speech content with microphone as source
+        :param args: As the flag of the function(record(source, args[0])args[0] is the time how long to record.)
+        :type args: List
+        :return: To update the global variable (self.r).
+        """
+        self.audio = None
+        self.recognizer = pby.Recognizer(app_key=self.API_KEY, secret_key=self.API_SECRET)
+        with pby.Microphone() as source:                # use the default microphone as the audio source
+            self.audio = self.recognizer.record(source, args[0])
+
+        print "audio stop"
+        with open('test.wav', 'w') as f:
+            f.write(self.audio.data)
+
+
+    def stop_thread(self):
+        """
+        Function: To update the global variable self.stop_thread_flag to be false.
+        :return: stop_thread_flag
+        """
+        self.stop_thread_flag = False
+
+
+if __name__ == '__main__':
+    voice = EWayVoice()
+    while 1:
+        voice.voice_detect()
+        voice.vsr_req()
+        time.sleep(1)

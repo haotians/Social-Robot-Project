@@ -1,0 +1,288 @@
+import math
+
+
+class WheelControlClass(object):
+    '''
+    This class defined several common motion for robot arm control.
+    Created Data: 2015-11-19 Version 2015-11-19
+    '''
+    def __init__(self, serial_transmit_object):
+        # control cycle is 50 ms
+        self.control_cycle = 50
+        self.serial_transmit_object = serial_transmit_object  # a object of class 'SerialTransmitForMX'
+
+    def ui_to_wheel(self, speed, angle):
+        # clear current transmit queue
+        self.serial_transmit_object.reset_queue()
+
+        speed = speed
+        angle = angle
+        # transform speed from 0 - 100 to 0 - 200
+        speed *= 2
+        if speed > 200:
+            speed = 200
+
+        direction = [0, 0]
+        # map the angle to wheel control direction
+        if angle >= 0 and angle < 90:
+            direction[0] = 1
+            direction[1] = 1.0 - 2.0 / 90 * angle
+        elif angle >= 90 and angle < 180:
+            direction[0] = 1.0 - 2.0 / 90 * (angle - 90)
+            direction[1] = -1
+        elif angle >= 180 and angle < 270:
+            direction[0] = -1
+            direction[1] = -1.0 + 2.0 / 90 * (angle - 180)
+        else:
+            direction[0] = -1.0 + 2.0 / 90 * (angle - 270)
+            direction[1] = 1
+
+        # map the control direction to rotate_direction
+        rotate_speed = [0, 0]
+        if direction[0] > 0:
+            rotate_speed[0] = 250 + int( direction[0] * speed )
+        elif direction[0] < 0:
+            rotate_speed[0] = int( -direction[0] * speed )
+
+        if direction[1] > 0:
+            rotate_speed[1] = int( direction[1] * speed )
+        elif direction[1] < 0:
+            rotate_speed[1] = 250 + int( -direction[1] * speed )
+
+        if speed == 0:
+            rotate_speed = [0,0]
+
+        # make move
+        temp_output = [0, 10000, rotate_speed[0], 10000, rotate_speed[1]]
+        self.serial_transmit_object.put_data_into_queue(temp_output)
+        print(temp_output)
+
+    def create_control_data(self, data):
+        if data[0] == 0:
+            self.ui_to_wheel(data[1], data[2])
+        else:
+            self.serial_transmit_object.put_data_into_queue([0, 0, 0, 0, 0])
+
+    def straight(self, distance, speed):
+        # when speed is positive, moves forward, or else backward, distance in cm, speed in cm/s.
+        self.distance=distance
+        self.speed=speed
+        self.acceleration=5
+        #limit speed and distance, compensation
+        if(self.distance<0):
+            self.distance=0
+        if(self.speed>78):
+            self.speed=78
+        if(self.speed<-78):
+            self.speed=-78
+
+        self.speed_num=int(speed*5.0*50/78.5)
+        # Calibrated by running with 5250 pulses ( with 5.25s), moves 78.5cm (measured)
+        if(self.speed_num>=0):
+            self.distance_counter=int(self.distance*5250/78.5)
+            self.v_thres=math.sqrt(0.5*2*self.acceleration*self.distance_counter)
+            self.v_thres2=math.sqrt(2*self.acceleration*self.distance_counter)
+
+            if(self.speed_num<=int(self.v_thres)):
+                self.distance_counter=int(self.distance_counter-self.speed_num*self.speed_num/(2*self.acceleration))
+            if(self.speed_num>int(self.v_thres) and self.speed_num<int(self.v_thres2)):
+                self.distance_counter=int(self.distance_counter/2)
+            if(self.speed_num>=int(self.v_thres2)):
+                self.speed_num=int(self.v_thres2)
+                self.distance_counter=int(self.distance_counter/2)
+            self.serial_transmit_object.put_data_into_queue([0,self.distance_counter,self.speed_num,self.distance_counter,self.speed_num+250])
+        else:
+            self.speed_num=-self.speed_num
+            self.distance_counter=int(self.distance*5250/78.5)
+            self.v_thres=math.sqrt(0.5*2*self.acceleration*self.distance_counter)
+            self.v_thres2=math.sqrt(2*self.acceleration*self.distance_counter)
+
+            if(self.speed_num<=int(self.v_thres)):
+                self.distance_counter=int(self.distance_counter-self.speed_num*self.speed_num/(2*self.acceleration))
+            if(self.speed_num>int(self.v_thres) and self.speed_num<int(self.v_thres2)):
+                self.distance_counter=int(self.distance_counter/2)
+            if(self.speed_num>=int(self.v_thres2)):
+                self.speed_num=int(self.v_thres2)
+                self.distance_counter=int(self.distance_counter/2)
+            self.serial_transmit_object.put_data_into_queue([0,self.distance_counter,self.speed_num+250,self.distance_counter,self.speed_num])
+
+    def circle(self,angle,radius,speed):
+        # when radius is positive, moves CCW, or else CW. angle in degree, radius in cm, speed in cm/s.
+        self.angle=angle
+        self.radius=radius
+        self.speed=speed
+        self.wheel_distance=34.0
+        self.alfa=self.angle*3.14/180
+        self.acceleration=5
+        #limit angle,radius,and speed, compensation
+        if(self.angle<0):
+            self.angle=0
+        if(self.speed<0):
+            self.speed=0
+        if(self.speed>78):
+            self.speed=78
+
+        # Calibrated by running with 5250 pulses ( with 5.25s), moves 78.5cm (measured)
+        if(self.radius>=0 and self.radius<0.5*self.wheel_distance):
+            self.distance_counterL=int((0.5*self.wheel_distance+self.radius)*self.alfa*5250/78.5)
+            self.distance_counterR=int((0.5*self.wheel_distance-self.radius)*self.alfa*5250/78.5)
+            self.speedL=self.speed*(0.5*self.wheel_distance+self.radius)/(0.5*self.wheel_distance)
+            self.speedR=self.speed*(0.5*self.wheel_distance-self.radius)/(0.5*self.wheel_distance)
+            self.speed_numL=int(self.speedL*5.0*50/78.5)
+            self.speed_numR=int(self.speedR*5.0*50/78.5)
+
+            self.v_thresL=math.sqrt(0.5*2*self.acceleration*self.distance_counterL)
+            self.v_thresL2=math.sqrt(2*self.acceleration*self.distance_counterL)
+            self.v_thresR=math.sqrt(0.5*2*self.acceleration*self.distance_counterR)
+            self.v_thresR2=math.sqrt(2*self.acceleration*self.distance_counterR)
+
+            if(self.speed_numL<=int(self.v_thresL)):
+                self.distance_counterL=int(self.distance_counterL-self.speed_numL*self.speed_numL/(2*self.acceleration))
+            if(self.speed_numL>int(self.v_thresL) and self.speed_numL<int(self.v_thresL2)):
+                self.distance_counterL=int(self.distance_counterL/2)
+            if(self.speed_numL>=int(self.v_thresL2)):
+                self.speed_numL=int(self.v_thresL2)
+                self.distance_counterL=int(self.distance_counterL/2)
+            if(self.speed_numR<=int(self.v_thresR)):
+                self.distance_counterR=int(self.distance_counterR-self.speed_numR*self.speed_numR/(2*self.acceleration))
+            if(self.speed_numR>int(self.v_thresR) and self.speed_numR<int(self.v_thresR2)):
+                self.distance_counterR=int(self.distance_counterR/2)
+            if(self.speed_numR>=int(self.v_thresR2)):
+                self.speed_numR=int(self.v_thresR2)
+                self.distance_counterR=int(self.distance_counterR/2)
+            if(self.speed_numL==0):
+                self.speed_numL=1
+            if(self.speed_numR==0):
+                self.speed_numR=1
+
+            self.serial_transmit_object.put_data_into_queue([0,self.distance_counterL,self.speed_numL,self.distance_counterR,self.speed_numR])
+
+        if(self.radius>=0.5*self.wheel_distance):
+            self.distance_counterL=int(5250*self.alfa*(self.radius+0.5*self.wheel_distance)/78.5)
+            self.distance_counterR=int(5250*self.alfa*(self.radius-0.5*self.wheel_distance)/78.5)
+            self.speedL=self.speed*(self.radius+0.5*self.wheel_distance)/(0.5*self.wheel_distance)
+            self.speedR=self.speed*(self.radius-0.5*self.wheel_distance)/(0.5*self.wheel_distance)
+            self.speed_numL=int(self.speedL*5.0*50/78.5)
+            self.speed_numR=int(self.speedR*5.0*50/78.5)
+
+            self.v_thresL=math.sqrt(0.5*2*self.acceleration*self.distance_counterL)
+            self.v_thresL2=math.sqrt(2*self.acceleration*self.distance_counterL)
+            self.v_thresR=math.sqrt(0.5*2*self.acceleration*self.distance_counterR)
+            self.v_thresR2=math.sqrt(2*self.acceleration*self.distance_counterR)
+
+            if(self.speed_numL<=int(self.v_thresL)):
+                self.distance_counterL=int(self.distance_counterL-self.speed_numL*self.speed_numL/(2*self.acceleration))
+            if(self.speed_numL>int(self.v_thresL) and self.speed_numL<int(self.v_thresL2)):
+                self.distance_counterL=int(self.distance_counterL/2)
+            if(self.speed_numL>=int(self.v_thresL2)):
+                self.speed_numL=int(self.v_thresL2)
+                self.distance_counterL=int(self.distance_counterL/2)
+            if(self.speed_numR<=int(self.v_thresR)):
+                self.distance_counterR=int(self.distance_counterR-self.speed_numR*self.speed_numR/(2*self.acceleration))
+            if(self.speed_numR>int(self.v_thresR) and self.speed_numR<int(self.v_thresR2)):
+                self.distance_counterR=int(self.distance_counterR/2)
+            if(self.speed_numR>=int(self.v_thresR2)):
+                self.speed_numR=int(self.v_thresR2)
+                self.distance_counterR=int(self.distance_counterR/2)
+            if(self.speed_numL==0):
+                self.speed_numL=1
+            if(self.speed_numR==0):
+                self.speed_numR=1
+
+            self.serial_transmit_object.put_data_into_queue([0,self.distance_counterL,self.speed_numL,self.distance_counterR,self.speed_numR+250])
+
+        if(self.radius>-0.5*self.wheel_distance and self.radius<0):
+            self.radius=-self.radius
+            self.distance_counterL=int(5250*self.alfa*(0.5*self.wheel_distance-self.radius)/78.5)
+            self.distance_counterR=int(5250*self.alfa*(0.5*self.wheel_distance+self.radius)/78.5)
+            self.speedL=self.speed*(0.5*self.wheel_distance-self.radius)/(0.5*self.wheel_distance)
+            self.speedR=self.speed*(0.5*self.wheel_distance+self.radius)/(0.5*self.wheel_distance)
+            self.speed_numL=int(self.speedL*5.0*50/78.5)
+            self.speed_numR=int(self.speedR*5.0*50/78.5)
+
+            self.v_thresL=math.sqrt(0.5*2*self.acceleration*self.distance_counterL)
+            self.v_thresL2=math.sqrt(2*self.acceleration*self.distance_counterL)
+            self.v_thresR=math.sqrt(0.5*2*self.acceleration*self.distance_counterR)
+            self.v_thresR2=math.sqrt(2*self.acceleration*self.distance_counterR)
+
+            if(self.speed_numL<=int(self.v_thresL)):
+                self.distance_counterL=int(self.distance_counterL-self.speed_numL*self.speed_numL/(2*self.acceleration))
+            if(self.speed_numL>int(self.v_thresL) and self.speed_numL<int(self.v_thresL2)):
+                self.distance_counterL=int(self.distance_counterL/2)
+            if(self.speed_numL>=int(self.v_thresL2)):
+                self.speed_numL=int(self.v_thresL2)
+                self.distance_counterL=int(self.distance_counterL/2)
+            if(self.speed_numR<=int(self.v_thresR)):
+                self.distance_counterR=int(self.distance_counterR-self.speed_numR*self.speed_numR/(2*self.acceleration))
+            if(self.speed_numR>int(self.v_thresR) and self.speed_numR<int(self.v_thresR2)):
+                self.distance_counterR=int(self.distance_counterR/2)
+            if(self.speed_numR>=int(self.v_thresR2)):
+                self.speed_numR=int(self.v_thresR2)
+                self.distance_counterR=int(self.distance_counterR/2)
+            if(self.speed_numL==0):
+                self.speed_numL=1
+            if(self.speed_numR==0):
+                self.speed_numR=1
+
+            self.serial_transmit_object.put_data_into_queue([0,self.distance_counterL,self.speed_numL+250,self.distance_counterR,self.speed_numR+250])
+
+        if(self.radius<=-0.5*self.wheel_distance):
+            self.radius=-self.radius
+            self.distance_counterL=int(5250*self.alfa*(self.radius-0.5*self.wheel_distance)/78.5)
+            self.distance_counterR=int(5250*self.alfa*(self.radius+0.5*self.wheel_distance)/78.5)
+            self.speedL=self.speed*(self.radius-0.5*self.wheel_distance)/(0.5*self.wheel_distance)
+            self.speedR=self.speed*(self.radius+0.5*self.wheel_distance)/(0.5*self.wheel_distance)
+            self.speed_numL=int(self.speedL*5.0*50/78.5)
+            self.speed_numR=int(self.speedR*5.0*50/78.5)
+
+            self.v_thresL=math.sqrt(0.5*2*self.acceleration*self.distance_counterL)
+            self.v_thresL2=math.sqrt(2*self.acceleration*self.distance_counterL)
+            self.v_thresR=math.sqrt(0.5*2*self.acceleration*self.distance_counterR)
+            self.v_thresR2=math.sqrt(2*self.acceleration*self.distance_counterR)
+
+            if(self.speed_numL<=int(self.v_thresL)):
+                self.distance_counterL=int(self.distance_counterL-self.speed_numL*self.speed_numL/(2*self.acceleration))
+            if(self.speed_numL>int(self.v_thresL) and self.speed_numL<int(self.v_thresL2)):
+                self.distance_counterL=int(self.distance_counterL/2)
+            if(self.speed_numL>=int(self.v_thresL2)):
+                self.speed_numL=int(self.v_thresL2)
+                self.distance_counterL=int(self.distance_counterL/2)
+            if(self.speed_numR<=int(self.v_thresR)):
+                self.distance_counterR=int(self.distance_counterR-self.speed_numR*self.speed_numR/(2*self.acceleration))
+            if(self.speed_numR>int(self.v_thresR) and self.speed_numR<int(self.v_thresR2)):
+                self.distance_counterR=int(self.distance_counterR/2)
+            if(self.speed_numR>=int(self.v_thresR2)):
+                self.speed_numR=int(self.v_thresR2)
+                self.distance_counterR=int(self.distance_counterR/2)
+            if(self.speed_numL==0):
+                self.speed_numL=1
+            if(self.speed_numR==0):
+                self.speed_numR=1
+
+            self.serial_transmit_object.put_data_into_queue([0,self.distance_counterL,self.speed_numL,self.distance_counterR,self.speed_numR+250])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

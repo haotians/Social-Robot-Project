@@ -1,0 +1,85 @@
+============================================================
+Time  2015/12/23 16:40:37 653 
+============================================================
+[2015/12/23 16:40:37 653] tts        400  SYS_MSG_LOAD | tts LOAD!  
+[2015/12/23 16:40:37 653] tts        414  SYS_MSG_REGCB |SYS_MSG_REGCB param0 =   msp_status_cb  param1 =  func(4406f4e0) 
+[2015/12/23 16:40:37 653] tts_cloud  1238 SYS_MSG_REGCB param0 =   msp_status_cb  param1 =  func(4406f4e0) 
+[2015/12/23 16:40:37 653] tts        437  TTS_MSG_SSB  
+[2015/12/23 16:40:37 653] tts        478  TTS_MSG_SSB | local tts sessionbegin in  
+[2015/12/23 16:40:37 654] tts        499  TTS_MSG_SSB | local out   
+[2015/12/23 16:40:37 654] tts        554  TTS_MSG_SYN  0  
+[2015/12/23 16:40:37 654] tts        559  TTS_MSG_SYN | local in  
+[2015/12/23 16:40:37 654] tts        568  TTS_MSG_SYN | local out  
+[2015/12/23 16:40:37 654] tts        579  TTS_MSG_GETAUDIO  0  
+[2015/12/23 16:40:37 654] tts        584  TTS_MSG_GETAUDIO | local in  
+[2015/12/23 16:40:37 654] tts        620  TTS_MSG_GETAUDIO | local out  0  nil  1  
+[2015/12/23 16:40:37 659] tts        280  Aisound_cb | AISOUND_CB_BEGIN  
+[2015/12/23 16:40:37 670] tts        579  TTS_MSG_GETAUDIO  0  
+[2015/12/23 16:40:37 670] tts        584  TTS_MSG_GETAUDIO | local in  
+[2015/12/23 16:40:37 670] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 670] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 670] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 670] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 670] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 670] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 670] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 670] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 670] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 670] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 670] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 670] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 670] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 670] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 670] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 671] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 671] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 671] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 671] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 671] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 671] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 671] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 671] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 671] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 671] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 671] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 671] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 671] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 671] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 671] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 671] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 671] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 671] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 671] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 671] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 671] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 671] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 671] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 671] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 672] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 672] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 672] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 672] tts        605  TTS_MSG_GETAUDIO | ced =  18  
+[2015/12/23 16:40:37 672] tts        605  TTS_MSG_GETAUDIO | ced =  28  
+[2015/12/23 16:40:37 672] tts        605  TTS_MSG_GETAUDIO | ced =  28  
+[2015/12/23 16:40:37 672] tts        620  TTS_MSG_GETAUDIO | local out  0  udata(44020148) 1  
+[2015/12/23 16:40:37 673] tts        283  Aisound_cb | AISOUND_CB_END   
+[2015/12/23 16:40:37 673] tts        295  Aisound_cb | AISOUND_CB_END Aisound_status =  2  
+[2015/12/23 16:40:37 687] tts        579  TTS_MSG_GETAUDIO  0  
+[2015/12/23 16:40:37 687] tts        584  TTS_MSG_GETAUDIO | local in  
+[2015/12/23 16:40:37 687] tts        605  TTS_MSG_GETAUDIO | ced =  28  
+[2015/12/23 16:40:37 687] tts        605  TTS_MSG_GETAUDIO | ced =  28  
+[2015/12/23 16:40:37 687] tts        605  TTS_MSG_GETAUDIO | ced =  28  
+[2015/12/23 16:40:37 687] tts        605  TTS_MSG_GETAUDIO | ced =  28  
+[2015/12/23 16:40:37 687] tts        605  TTS_MSG_GETAUDIO | ced =  28  
+[2015/12/23 16:40:37 687] tts        605  TTS_MSG_GETAUDIO | ced =  28  
+[2015/12/23 16:40:37 687] tts        605  TTS_MSG_GETAUDIO | ced =  28  
+[2015/12/23 16:40:37 687] tts        605  TTS_MSG_GETAUDIO | ced =  28  
+[2015/12/23 16:40:37 687] tts        605  TTS_MSG_GETAUDIO | ced =  28  
+[2015/12/23 16:40:37 687] tts        605  TTS_MSG_GETAUDIO | ced =  28  
+[2015/12/23 16:40:37 687] tts        605  TTS_MSG_GETAUDIO | ced =  28  
+[2015/12/23 16:40:37 687] tts        620  TTS_MSG_GETAUDIO | local out  0  udata(44020258) 2  
+[2015/12/23 16:40:37 688] tts        631  TTS_MSG_SSE  
+[2015/12/23 16:40:37 688] tts        640  TTS_MSG_SSE | local in  
+[2015/12/23 16:40:37 688] tts        186  collect_plog_data | in  
+[2015/12/23 16:40:37 688] tts        224  collect_plog_data | out  
+[2015/12/23 16:40:37 689] tts        644  TTS_MSG_SSE | local out  

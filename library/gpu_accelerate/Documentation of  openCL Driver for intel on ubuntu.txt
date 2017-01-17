@@ -1,0 +1,70 @@
+相关Drivers文件，请到本地网络共享（小米网络硬盘）EWAYNET-> 共享-> intel NUC drivers for OpenCL 文件夹中查找。
+
+CPU Driver:
+
+- 官方说明：https://software.intel.com/en-us/articles/opencl-drivers
+
+- 将intel NUC drivers for OpenCL -> cpu driver 文件夹的 intel_code_builder_for_opencl_2015_ubuntu_5.0.0.43_x64.tgz 文件解压。
+- 打开terminal 并切换到解压之后的目录中，执行 sudo ./install_GUI.sh  命令即可。
+
+GPU Driver:
+
+- 官方说明：https://software.intel.com/en-us/articles/opencl-drivers
+
+    - 因为 Intel的GPU Driver是集成在  Intel® Media Server Studio 中的，所以只要调通Media Server Studio即可。
+    - 我们需要用到的文件均已下载好并在intel NUC drivers for OpenCL -> gpu driver 文件夹中。
+
+操作步骤如下：
+
+- 1) Extract && Install Intel® Media Server Studio:
+[user@host]$ mkdir -p ~/msdk_install
+
+- [user@host]$ cd ~/msdk_install
+- [user@host msdk_install]$ cp MediaServerStudioProfessionalEvaluation2015R6.tar.gz  #就是将MediaServerStudioProfessionalEvaluation2015R6.tar.gz文件 复制到msdk_install 这个文件夹下
+- [user@host msdk_install]$ tar xzvf MediaServerStudioProfessionalEvaluation2015R6.tar.gz
+
+- [user@host msdk_install]$ cd MediaServerStudioEssentials2015R6
+
+- [user@host msdk_install]$ tar zxvf SDK2015Production16.4.2.1.tar.gz
+
+- [user@host msdk_install]$ cd SDK2015Production16.4.2.1/Generic
+
+- [user@host msdk_install]$ tar zxvf intel-linux-media-ocl_generic_16.4.2.1-39163_64bit.tar.gz
+
+- [root@host msdk_install]$ bash install_media.sh
+
+- [user@host msdk_install]$ source /etc/profile
+
+- 2) Apply Intel Media kernel patches:
+[user@host]$ mkdir -p ~/kernel_install
+
+- [user@host]$ cd ~/kernel_install
+- [root@host kernel_install]$ cp linux-3.14.5.tar.gz   # 将文件linux-3.14.5.tar.gz复制到kernel_install 这个文件夹中
+
+- [user@host kernel_install]$ tar xzvf linux-3.14.5.tar.gz
+
+- [user@host kernel_install]$ cp -rf /opt/intel/mediasdk/opensource/patches/kmd/3.14.5/intel-kernel-patches.tar.bz2 .
+
+- [user@host kernel_install]$ tar xjvf intel-kernel-patches.tar.bz2
+
+- [user@host kernel_install]$ cd linux-3.14.5
+
+- [user@host linux-3.14.5]$ cp apply_patches.py . # 将apply_patches.py这个python文件 以及Ubuntu1404_BDW.config 文件 复制到 linux-3.14.5 这个文件夹下
+
+- [user@host linux-3.14.5]$ python apply_patches.py ../intel-kernel-patches
+
+- [user@host linux-3.14.5]$ cp -f Ubuntu1404_BDW.config .config #It's in the same folder of this README
+
+- [user@host linux-3.14.5]$ make -j16     # 这里要耐心等待好久，CPU会满载跑很长时间，不要以为是出错了，等待完成就好了...
+
+- [root@host linux-3.14.5]# make modules_install     # 同样需要一段时间...
+
+- [root@host linux-3.14.5]# make install      #同样需要一段时间，等待...
+
+- [root@host linux-3.14.5]# reboot        # 重启电脑
+
+- 3) Set these environment variables LD_LIBRARY_PATH=/usr/local/lib:/usr/lib64:/opt/intel/mediasdk/lib64:/opt/intel/common/mdf/lib64:$LD_LIBRARY_PATH
+LIBVA_DRIVER_NAME=iHD
+LIBVA_DRIVERS_PATH=/opt/intel/mediasdk/lib64
+
+4）可以尝试去跑OpenCL了。出问题了就再从头来一遍，保证每一个环节都不要错哈。

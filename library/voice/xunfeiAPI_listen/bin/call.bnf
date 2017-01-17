@@ -1,0 +1,45 @@
+#BNF+IAT 1.0 UTF-8;
+!grammar call;
+
+!start <Start>;
+<Start>:<MOVE>|<STOP>|<ARM>|<RESET>|<SPEAK>|<SHUTUP>|<CAMERA>|<SHUTDOWN>|<ABOUT>|<WEATHER>|<GREET>|<ARMMOVE>;
+
+<MOVE>:[(向|往|靠|朝)]<direction>[(走|进|转|行)];
+<direction>:前!id(1)|后!id(2)|左!id(3)|右!id(4);
+
+<STOP>:<stop>;
+<stop>:停|停止|停下来|静止|<donot>走|<donot>动;
+<donot>:不|不要|别;
+
+<ARM>:(挥|摆)(手!id(10)|臂|手臂);
+
+<RESET>:(关机|预备|初始)[(位置)];
+
+<SPEAK>:[(和|跟|同)(我)]<speak>;
+<speak>:说话|聊天|唠嗑;
+
+<SHUTUP>:<shutup>;
+<shutup>:闭嘴|<donot>说话|少废话;
+
+<CAMERA>:(启动|打开|开始|关闭|停止)[(网络)](摄像机|摄像|监控|人脸识别);
+
+<SHUTDOWN>:<shutdown>;
+<shutdown>:启动自毁程序|自毁程序|自杀|去死;
+
+<ABOUT>:<you>[[<is>]<who>|<about>];
+<you>:你|机器人|机器人你;
+<is>:是|系|的;
+<who>:谁|哪位|哪一位;
+<about>:多大了|多少岁|名字|性别;
+
+<WEATHER>:[<day>]<weather>[<how>];
+<day>:今天|昨天|前天|这几天;
+<weather>:天气|气候|雾霾;
+<how>:怎么样|好不好;
+
+<GREET>:<greet>;
+<greet>:你好!id(1111)|你好啊|早上好|晚上好|中午好|好久不见|哦哈哟;
+
+<ARMMOVE>:[手]<armmove>;
+<armmove>:打开|关闭|再见|走开|高兴;
+

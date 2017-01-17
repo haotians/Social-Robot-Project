@@ -1,0 +1,99 @@
+# -*- coding:utf-8 -*-
+
+import serial
+import py_voice as pv
+
+
+class Voice(object):
+
+    def __init__(self):
+
+        self.voice_catcher = serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=None)
+        self.answer_sheet = 'Mylist.ini'
+        self.answer_word = 'Myanswer.ini'
+        self.tex = list()
+        self.word = list()
+        print("Serial port is initialized.")
+
+    def detect(self):
+
+        print 'Voice detecting...'
+        word = self.voice_catcher.read()  # <type 'str'>
+        print 'Voice detected.'
+        return word
+
+    def hex_print(self):
+
+        self.result = ''
+        argv = self.detect()
+        length = len(argv)
+        for x in xrange(length):
+            vol = ord(argv[x])
+            hex1 = '%02x'%vol
+            self.result += hex1+' '
+        print 'The result is:', self.result
+
+    def entrance(self):
+
+        print "Matching password..."
+        if self.voice_number == 10:
+            print "Password matched."
+            return True
+        else:
+            print "Wrong password."
+            return False
+
+    def text_reading(self):
+
+        r = open(self.answer_sheet, 'r')
+        for line in open(self.answer_sheet):
+            line = r.readline()
+            line = line.strip()
+            self.tex.append(line)
+        r.close()
+        s = open(self.answer_word, 'r')
+        for line1 in open(self.answer_word):
+            line1 = s.readline()
+            line1 = line1.strip()
+            self.word.append(line1)
+        s.close()
+
+    def analysis(self):
+
+        self.voice_number = self.result
+        self.voice_number = int(self.voice_number)
+
+    def speak(self):
+
+        print self.word[self.voice_number]
+        pv.EWayVoice().say(self.word[self.voice_number])
+        if self.voice_number == 06:
+            self.resting()
+
+    def resting(self):
+
+        while 1:
+            self.hex_print()
+            self.text_reading()
+            self.analysis()
+            if self.voice_number == 03:
+                print 'Waking up system...'
+                pv.EWayVoice().say(self.word[self.voice_number])
+                break
+
+if __name__ == '__main__':
+
+    voice = Voice()
+    while 1:
+        while 1:
+            voice.hex_print()
+            voice.text_reading()
+            voice.analysis()
+            if voice.entrance():
+                break
+            else:
+                pass
+        voice.hex_print()
+        voice.text_reading()
+        voice.analysis()
+        voice.speak()

@@ -1,0 +1,18 @@
+General Idea for Deep-learning Based Face Identification System
+--Haotian Shi, 2016-02-14
+
+1. train a CNN based face recongnition network using millions of faces. 
+   Data size is important for we want the network to be able to learn as much features as possible
+
+2. for new traing samples(format modified according to the requirement of the trained network in 1), 
+   i.e. new faces in our robotic system, exatrct the data in the first full connect layer or layers as features
+
+3. reduce the dimision of features to about 200(?) though PCA process
+
+4. use classic face classifiers(KNN or navive bayesian) to train the features and generate models
+
+5. apply svm to the trained classifier models and get a final decision model
+
+6. when a face is detected, go though process 2-3, then comparing results with the faces already in the database and generate a confidence scores. 
+   For scores within a given threshould, consider this face already known to the robot.
+   Pick the highest confidence score as the final output
